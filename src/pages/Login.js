@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { MdEmail } from "react-icons/md";
 import { IoMdKey } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
@@ -34,11 +35,14 @@ function Login() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-y-4">
-            <button className="bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
-              Sign In
-            </button>
-            <button className="flex items-center justify-center gap-2  hover:bg-gray-100 transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 ">
-              <svg
+            <Link to={"/homepage"}>
+              <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
+                Sign In
+              </button>
+            </Link>
+            <Link to={"/signup"}>
+              <button className="flex items-center justify-center gap-2  hover:bg-gray-100 transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 w-full">
+                {/* <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -61,9 +65,10 @@ function Login() {
                   d="M5.27698 14.2663C5.03833 13.5547 4.90909 12.7922 4.90909 11.9984C4.90909 11.2167 5.03444 10.4652 5.2662 9.76294L1.23999 6.64844C0.436587 8.25884 0 10.0738 0 11.9984C0 13.918 0.444781 15.7286 1.23746 17.3334L5.27698 14.2663Z"
                   fill="#FBBC05"
                 />
-              </svg>
-              Sign in with Google
-            </button>
+              </svg> Sign in with Google*/}
+                Create an account
+              </button>
+            </Link>
           </div>
         </div>
       </div>
