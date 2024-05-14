@@ -8,7 +8,7 @@ function Login() {
   return (
     <div className="flex w-full h-screen bg-gray-200">
       <div className="w-full flex items-center justify-center lg:w-1/2">
-        <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray">
+        <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray w-4/5">
           <h1 className="text-4xl font-semibold">Welcome Back</h1>
           <p className="font-medium text-lg text-gray-500 mt-4">
             Welcome back! please enter your details.
@@ -35,7 +35,7 @@ function Login() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-y-4">
-            <Link to={"/homepage"}>
+            <Link to={"/"}>
               <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
                 Sign In
               </button>
