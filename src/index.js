@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./input.css";
 // import "./style.css";
@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,11 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: "homepage",
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/homepage",
     element: <Homepage />,
   },
 ]);
