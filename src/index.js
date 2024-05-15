@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./input.css";
-// import "./style.css";
+import "./style.css";
 import App from "./App";
 import Homepage from "./pages/Homepage";
 import Dashboard from "./pages/Dashboard";

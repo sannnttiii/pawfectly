@@ -35,7 +35,7 @@ function Login() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-y-4">
-            <Link to={"/"}>
+            <Link to={"/homepage"}>
               <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
                 Sign In
               </button>
@@ -72,9 +72,56 @@ function Login() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-200 lg:flex h-full w-1/2 hidden relative items-center justify-center">
-        <div className="w-60 h-60 bg-gradient-to-tr from-orange-500 to-yellow-500 rounded-full animate-bounce"></div>
-        <div className="w-full h-1/2 absolute bottom-0 bg-white/10 backdrop-blur-lg"></div>
+      <div className=" lg:flex h-full w-1/2 hidden relative items-center justify-center">
+        {/* <div className="w-60 h-60 bg-gradient-to-tr from-orange-500 to-yellow-500 rounded-full animate-bounce"></div> */}
+        <div class="paw-print-1">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+
+        <div class="paw-print-2">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+
+        <div class="paw-print-3">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+
+        <div class="paw-print-4">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+
+        <div class="paw-print-5">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+
+        <div class="paw-print-6">
+          <div class="pad large"></div>
+          <div class="pad small-1"></div>
+          <div class="pad small-2"></div>
+          <div class="pad small-3"></div>
+          <div class="pad small-4"></div>
+        </div>
+        {/* <div className="w-full h-1/2 absolute bottom-0 bg-white/10 backdrop-blur-lg"></div> */}
       </div>
     </div>
   );

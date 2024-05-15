@@ -8,18 +8,16 @@ function Dashboard() {
       <Navbar></Navbar>
       {/* <div className="bg-orange-400 min-h-screen"></div> */}
       <section class="h-screen bg-orange-400 flex items-center justify-center">
-        <div class="w-1/2 flex justify-center items-center">
+        <div class="columns-2">
           <img
+            className="w-fullh-auto justify-center items-center"
             src="../images/bg-dashboard-1.png"
             alt="Left Image"
-            class="w-full h-auto"
           />
-        </div>
-        <div class="w-1/2 flex justify-center items-center">
           <img
+            className="w-full  h-auto justify-center items-center"
             src="../images/bg-dashboard-2.png"
             alt="Right Image"
-            class="w-full h-auto"
           />
         </div>
       </section>
