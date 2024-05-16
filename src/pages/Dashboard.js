@@ -10,7 +10,7 @@ function Dashboard() {
       <section class="h-screen bg-orange-400 flex items-center justify-center">
         <div class="columns-2">
           <img
-            className="w-fullh-auto justify-center items-center"
+            className="w-full h-auto justify-center items-center"
             src="../images/bg-dashboard-1.png"
             alt="Left Image"
           />

@@ -36,7 +36,7 @@ export default function Signup() {
           </div>
 
           <div className="mt-8 flex flex-col gap-y-4">
-            <Link to={"/homepage"}>
+            <Link to={"/preprofile"}>
               <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
                 Sign Up
               </button>
