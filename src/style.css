@@ -89,7 +89,7 @@
 .paw-print-6 {
   opacity: 0;
   position: absolute;
-  left: 635px;
+  left: 620px;
   top: 270px;
   transform: rotate(10deg); 
   -webkit-animation: walk 3s linear infinite 1.25s;

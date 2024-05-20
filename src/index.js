@@ -12,6 +12,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Preprofile from "./pages/Preprofile";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/preprofile",
     element: <Preprofile />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
   {
     path: "/homepage",
