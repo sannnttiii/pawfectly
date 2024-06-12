@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import { FaHeart } from "react-icons/fa";
+import { Link } from "react-router-dom";
+// import { FaHeart } from "react-icons/fa";
 
 function Homepage() {
   return (
@@ -99,13 +100,16 @@ function Homepage() {
               </p>
             </div>
             <div class="m-auto mb-4 mt-0 flex justify-center">
-              <button className="w-14 h-14 mr-4 transition hover:scale-110 ">
-                <img
-                  src="../images/love.svg"
-                  alt="Love Icon"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </button>
+              <Link to={"/message"}>
+                <button className="flex w-14 h-14 mr-4 transition hover:scale-110 transform">
+                  <img
+                    src="../images/love.svg"
+                    alt="Love Icon"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </button>
+              </Link>
+
               <button className="w-14 h-14  transition hover:scale-110">
                 <img
                   src="../images/cancel.svg"

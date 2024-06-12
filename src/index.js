@@ -13,6 +13,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Preprofile from "./pages/Preprofile";
 import Profile from "./pages/Profile";
+import Message from "./pages/Message";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/homepage",
     element: <Homepage />,
+  },
+  {
+    path: "/message",
+    element: <Message />,
   },
 ]);
 

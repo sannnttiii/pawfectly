@@ -24,11 +24,11 @@ function Dashboard() {
 
       <section class="flex-grow bg-white">
         <div class="container mx-auto px-6 py-12">
-          <h2 class="text-4xl font-bold text-center mb-12">Testimonials</h2>
-          <div class="flex flex-wrap">
-            <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-              <div class="flex-1 bg-white text-gray-600 rounded-t rounded-b-none overflow-hidden shadow">
-                <div class="p-8 text-3xl font-bold text-center border-b-4">
+          <h2 class="text-4xl font-bold text-center ">Testimonials</h2>
+          <div className="grid grid-cols-1 md:grid:cols-2 lg:grid-cols-3">
+            <div className="rounded-xl shadow-lg mr-4 mb-4">
+              <div className="p-4 flex flex-col">
+                <div class="p-4 text-3xl font-bold text-center border-b-4">
                   <img
                     class="w-30 h-28 rounded-full mx-auto py-0 my-2"
                     src="../images/testi1.jpeg"
@@ -46,9 +46,9 @@ function Dashboard() {
               </div>
             </div>
 
-            <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-              <div class="flex-1 bg-white text-gray-600 rounded-t rounded-b-none overflow-hidden shadow">
-                <div class="p-8 text-3xl font-bold text-center border-b-4">
+            <div className="rounded-xl shadow-lg mr-4 mb-4">
+              <div className="p-5 flex flex-col">
+                <div class="p-4 text-3xl font-bold text-center border-b-4">
                   <img
                     class="w-30 h-28 rounded-full mx-auto py-0 my-2"
                     src="../images/testi3.jpeg"
@@ -66,9 +66,9 @@ function Dashboard() {
               </div>
             </div>
 
-            <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-              <div class="flex-1 bg-white text-gray-600 rounded-t rounded-b-none overflow-hidden shadow">
-                <div class="p-8 text-3xl font-bold text-center border-b-4">
+            <div className="rounded-xl shadow-lg mr-4 mb-4">
+              <div className="p-5 flex flex-col">
+                <div class="p-4 text-3xl font-bold text-center border-b-4">
                   <img
                     class="w-30 h-28 rounded-full mx-auto py-0 my-2"
                     src="../images/testi2.jpeg"
