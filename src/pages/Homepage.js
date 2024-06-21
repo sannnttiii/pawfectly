@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
+import MatchPopup from "../components/MatchPopup";
 import { Link } from "react-router-dom";
 // import { FaHeart } from "react-icons/fa";
 
 function Homepage() {
+  const [modal, setModal] = useState(false);
+
+  const toggleModal = () => {
+    setModal(!modal);
+    console.log(modal);
+  };
   return (
     <div>
       <Navbar></Navbar>
@@ -29,8 +36,11 @@ function Homepage() {
                 yang seumuran dan seras ya hihihiiiihihihhi
               </p>
             </div>
-            <div class="m-auto mb-4 mt-0 flex justify-center">
-              <button className="w-14 h-14 mr-4 transition hover:scale-110 ">
+            <div className="m-auto mb-4 mt-0 flex justify-center">
+              <button
+                className="w-14 h-14 mr-4 transition hover:scale-110 "
+                onClick={toggleModal}
+              >
                 <img
                   src="../images/love.svg"
                   alt="Love Icon"
@@ -62,15 +72,18 @@ function Homepage() {
                 friend
               </p>
             </div>
-            <div class="m-auto mb-4 mt-0 flex justify-center">
-              <button className="w-14 h-14 mr-4 transition hover:scale-110 ">
+            <div className="m-auto mb-4 mt-0 flex justify-center">
+              <button
+                className="w-14 h-14 mr-4 transition hover:scale-110 "
+                onClick={toggleModal}
+              >
                 <img
                   src="../images/love.svg"
                   alt="Love Icon"
                   className="w-full h-full object-cover rounded-full"
                 />
               </button>
-              <button className="w-14 h-14  transition hover:scale-110">
+              <button className="w-14 h-14 transition hover:scale-110">
                 <img
                   src="../images/cancel.svg"
                   alt="Cancel Icon"
@@ -99,16 +112,19 @@ function Homepage() {
                 sisanya dia yang minta
               </p>
             </div>
-            <div class="m-auto mb-4 mt-0 flex justify-center">
-              <Link to={"/message"}>
-                <button className="flex w-14 h-14 mr-4 transition hover:scale-110 transform">
-                  <img
-                    src="../images/love.svg"
-                    alt="Love Icon"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </button>
-              </Link>
+            <div className="m-auto mb-4 mt-0 flex justify-center">
+              {/* <Link to={"/message"}> */}
+              <button
+                className="flex w-14 h-14 mr-4 transition hover:scale-110 transform"
+                onClick={toggleModal}
+              >
+                <img
+                  src="../images/love.svg"
+                  alt="Love Icon"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </button>
+              {/* </Link> */}
 
               <button className="w-14 h-14  transition hover:scale-110">
                 <img
@@ -121,6 +137,7 @@ function Homepage() {
           </div>
         </div>
       </div>
+      <MatchPopup toggleModal={toggleModal} modal={modal} />
     </div>
   );
 }
