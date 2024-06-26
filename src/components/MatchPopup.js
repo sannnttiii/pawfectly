@@ -1,22 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 function MatchPopup({ toggleModal, modal }) {
-  // if (!modal) return null;
-  // const [modal, setModal] = useState(false);
-
-  // const toggleModal = () => {
-  //   setModal(!modal);
-  //   console.log(modal);
-  // };
-
-  // useEffect(() => {
-  //   if (modal) {
-  //     document.body.classList.add("overflow-y-hidden");
-  //   } else {
-  //     document.body.classList.remove("overflow-y-hidden");
-  //   }
-  // }, [modal]);
-
   return (
     <>
       {modal && (

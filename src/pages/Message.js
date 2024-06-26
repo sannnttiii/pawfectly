@@ -10,7 +10,7 @@ const messages = [
       "Hi there! just found out that maybe our dog can be friends. I'm based on Surabaya, can we meet?  ",
     isOwn: true,
   },
-  { message: "How can I help you today?", isOwn: false },
+  { message: "Sounds great!", isOwn: false },
 ];
 function Message() {
   return (
