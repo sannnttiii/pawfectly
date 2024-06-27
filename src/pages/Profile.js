@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Profile() {
+  const [petTypeIsDog, setPetTypeIsDog] = useState(true);
+
+  useEffect(() => {
+    const petType = localStorage.getItem("petType");
+    if (petType === "isCat") {
+      setPetTypeIsDog(false);
+    } else {
+      setPetTypeIsDog(true);
+    }
+
+    console.log("Pet Type", petTypeIsDog);
+  }, []);
+
   return (
     <div className="flex w-full min-h-screen bg-gray-200">
       <div className="w-full flex items-center justify-center lg:w-1/2">
@@ -28,28 +41,7 @@ function Profile() {
             <label className="text-lg font-medium" htmlFor="petType">
               Pet Type
             </label>
-            <select
-              id="petType"
-              className="w-full border-2 border-gray-100 rounded-xl p-4 bg-transparent"
-            >
-              <option value="" disabled>
-                Select pet type
-              </option>
-              <option value="persian">Persian</option>
-              <option value="anggora">Anggora</option>
-              <option value="siam">Siam</option>
-              <option value="ragdoll">Ragdoll</option>
-              <option value="himalaya">Himalaya</option>
-              <option value="british">British Shorthair</option>
-              <option value="american">American Shorthair</option>
-              <option value="scottish">Scottish Fold</option>
-              <option value="mix">Mix</option>
-              <option value="other">Other</option>
-            </select>
 
-            <label className="text-lg font-medium" htmlFor="petType">
-              Pet Type
-            </label>
             <select
               id="petType"
               className="w-full border-2 border-gray-100 rounded-xl p-4 bg-transparent"
@@ -57,19 +49,36 @@ function Profile() {
               <option value="" disabled>
                 Select pet type
               </option>
-              <option value="golden">Golden Retriever</option>
-              <option value="labrador">Labrador Retriever</option>
-              <option value="poodle">Poodle</option>
-              <option value="shihtzu">Shih Tzu </option>
-              <option value="beagle">Beagle</option>
-              <option value="german">German Shepherd</option>
-              <option value="bulldog">Bulldog</option>
-              <option value="corgi">Corgi</option>
-              <option value="cihuahua">Cihuahua</option>
-              <option value="pomeranian">Pomeranian</option>
-              <option value="husky">Siberian Husky</option>
-              <option value="mix">Mix</option>
-              <option value="other">Other</option>
+              {petTypeIsDog ? (
+                <>
+                  <option value="golden">Golden Retriever</option>
+                  <option value="labrador">Labrador Retriever</option>
+                  <option value="poodle">Poodle</option>
+                  <option value="shihtzu">Shih Tzu </option>
+                  <option value="beagle">Beagle</option>
+                  <option value="german">German Shepherd</option>
+                  <option value="bulldog">Bulldog</option>
+                  <option value="corgi">Corgi</option>
+                  <option value="cihuahua">Cihuahua</option>
+                  <option value="pomeranian">Pomeranian</option>
+                  <option value="husky">Siberian Husky</option>
+                  <option value="mix">Mix</option>
+                  <option value="other">Other</option>
+                </>
+              ) : (
+                <>
+                  <option value="persian">Persian</option>
+                  <option value="anggora">Anggora</option>
+                  <option value="siam">Siam</option>
+                  <option value="ragdoll">Ragdoll</option>
+                  <option value="himalaya">Himalaya</option>
+                  <option value="british">British Shorthair</option>
+                  <option value="american">American Shorthair</option>
+                  <option value="scottish">Scottish Fold</option>
+                  <option value="mix">Mix</option>
+                  <option value="other">Other</option>
+                </>
+              )}
             </select>
 
             <label className="text-lg font-medium">Name</label>

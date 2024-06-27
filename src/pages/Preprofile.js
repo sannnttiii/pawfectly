@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
 function Preprofile() {
+  const [petTypeIsDog, setPetType] = useState(true);
+
+  const setPetTypeAndSave = (isDog) => {
+    setPetType(isDog);
+    if (isDog) {
+      localStorage.setItem("petType", "isDog");
+    } else {
+      localStorage.setItem("petType", "isCat");
+    }
+    console.log(localStorage.getItem("petType"));
+  };
   return (
     <div>
       <Navbar></Navbar>
@@ -13,10 +24,16 @@ function Preprofile() {
           </h2>
           <Link to={"/profile"}>
             <div className="flex justify-center">
-              <button className="w-4/12 mr-10 transform origin-center transition hover:scale-110">
+              <button
+                className="w-4/12 mr-10 transform origin-center transition hover:scale-110"
+                onClick={() => setPetTypeAndSave(true)}
+              >
                 <img src="../images/dogprofile.jpeg" alt="Left Image" />
               </button>
-              <button className="w-4/12 transform origin-center transition hover:scale-110">
+              <button
+                className="w-4/12 transform origin-center transition hover:scale-110"
+                onClick={() => setPetTypeAndSave(false)}
+              >
                 <img
                   className="justify-center items-center"
                   src="../images/catprofile.jpeg"
