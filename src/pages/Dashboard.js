@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import Navbar from "../components/Navbar";
 import Login from "./Login";
+import { IoPawSharp } from "react-icons/io5";
 
 function Dashboard() {
   return (
@@ -8,17 +9,24 @@ function Dashboard() {
       <Navbar></Navbar>
       {/* <div className="bg-orange-400 min-h-screen"></div> */}
       <section className="h-screen bg-orange-400 flex items-center justify-center">
-        <div className="columns-2">
-          <img
-            className="w-full h-auto justify-center items-center"
-            src="../images/bg-dashboard-1.png"
-            alt="Left Image"
-          />
-          <img
-            className="w-full  h-auto justify-center items-center"
-            src="../images/bg-dashboard-2.png"
-            alt="Right Image"
-          />
+        <div className="flex items-center justify-between h-auto w-full max-w-screen-lg px-10">
+          <div className="text-left">
+            <h1 className="text-8xl font-bold text-white">Pawfectly</h1>
+            <div className="flex items-center mt-4">
+              <IoPawSharp
+                alt="Paw Print"
+                className="w-12 h-12 mr-4 text-white"
+              />
+              <p className="text-2xl text-white">Find your pawfect match!</p>
+            </div>
+          </div>
+          <div className="relative w-96 h-96">
+            <img
+              src="../images/2dogs.jpg"
+              alt="Dogs"
+              className="object-cover w-full h-full rounded-full shadow-lg"
+            />
+          </div>
         </div>
       </section>
 
