@@ -1,6 +1,5 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Navbar from "../components/Navbar";
-import Login from "./Login";
 import { IoPawSharp } from "react-icons/io5";
 
 function Dashboard() {

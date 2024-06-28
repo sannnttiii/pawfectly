@@ -1,0 +1,63 @@
+export default [
+  {
+    id: 1,
+    name: "Diego",
+    gender: "girl",
+    age: 1,
+    ras: "other",
+    image: "../images/dogpic.jpeg",
+    location: "Surabaya",
+    description:
+      "Lorem ipsum dia suka main bola mandi bole umur 2 tahun nih cariyang seumuran dan seras ya hihihiiiihihihhi",
+  },
+  {
+    id: 2,
+    name: "Harby",
+    age: 1,
+    ras: "other",
+    image: "../images/dogpic2.jpeg",
+    location: "Surabaya",
+    description:
+      "Suka bermain dan telinga kelinci, he's playful and will protect friend",
+  },
+  {
+    id: 3,
+    name: "River",
+    age: 2,
+    ras: "other",
+    image: "../images/dogpic3.jpeg",
+    location: "Surabaya",
+    description:
+      "Bola kesukaannya, hanya suka dielus jika sedang tidur karena sisanya dia yang minta",
+  },
+  {
+    id: 4,
+    name: "Lauv",
+    gender: "boy",
+    age: 1,
+    ras: "other",
+    image: "../images/catpic.jpg",
+    location: "Surabaya",
+    description: "Happiest allalalalala cat ever olololo yayaya gitu",
+  },
+  {
+    id: 5,
+    name: "Rain",
+    gender: "boy",
+    age: 1,
+    ras: "other",
+    image: "../images/catpic2.jpg",
+    location: "Surabaya",
+    description: "CUTENESS BUANGET cat ever olololo yayaya gitu",
+  },
+  {
+    id: 6,
+    name: "River",
+    gender: "boy",
+    age: 2,
+    ras: "other",
+    image: "../images/catpic3.jpg",
+    location: "Surabaya",
+    description: "River soalnya sungai alias anak pungut di sungai",
+  },
+];
