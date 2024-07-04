@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { IoPawSharp } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    const loginStatus = JSON.parse(localStorage.getItem("isLogin"));
+    setIsLogin(loginStatus === "isLogin");
+  }, []);
+
   return (
     <div>
       <Navbar></Navbar>
       {/* <div className="bg-orange-400 min-h-screen"></div> */}
-      <section className="h-screen bg-orange-400 flex items-center justify-center">
-        <div className="flex items-center justify-between h-auto w-full max-w-screen-lg px-10">
+      <section className="h-screen bg-orange-400 flex  flex-col items-center justify-center">
+        <div className="flex items-center justify-between h-auto w-full max-w-screen-lg px-16">
           <div className="text-left">
             <h1 className="text-8xl font-bold text-white">Pawfectly</h1>
             <div className="flex items-center mt-4">
@@ -26,6 +34,13 @@ function Dashboard() {
               className="object-cover w-full h-full rounded-full shadow-lg"
             />
           </div>
+        </div>
+        <div className="justify-center pt-6">
+          <Link to={isLogin ? "/homepage" : "/login"}>
+            <button className="flex items-center justify-center bg-white text-yellow-500 hover:scale-110 transform py-4 px-20 rounded-full font-semibold text-lg border-1 border-gray-100 w-full">
+              Start Matching
+            </button>
+          </Link>
         </div>
       </section>
 

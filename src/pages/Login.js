@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
 import { MdEmail } from "react-icons/md";
 import { IoMdKey } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    localStorage.setItem("isLogin", JSON.stringify("isLogin"));
+    navigate("/homepage");
+  };
+
   return (
     <div className="flex w-full h-screen bg-gray-200">
       <div className="w-full flex items-center justify-center lg:w-1/2">
@@ -35,11 +41,14 @@ function Login() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-y-4">
-            <Link to={"/homepage"}>
-              <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
-                Sign In
-              </button>
-            </Link>
+            {/* <Link to={"/homepage"}> */}
+            <button
+              className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700"
+              onClick={handleLogin}
+            >
+              Sign In
+            </button>
+            {/* </Link> */}
             <Link to={"/signup"}>
               <button className="flex items-center justify-center gap-2  hover:bg-gray-100 transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 w-full">
                 {/* <svg

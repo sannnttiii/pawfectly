@@ -12,7 +12,7 @@ function Profile() {
       setPetTypeIsDog(true);
     }
 
-    console.log("Pet Type", petTypeIsDog);
+    // console.log("Pet Type", petTypeIsDog);
   }, []);
 
   return (
@@ -52,6 +52,7 @@ function Profile() {
               {petTypeIsDog ? (
                 <>
                   <option value="golden">Golden Retriever</option>
+                  <option value="bordercollie">Border Collie</option>
                   <option value="labrador">Labrador Retriever</option>
                   <option value="poodle">Poodle</option>
                   <option value="shihtzu">Shih Tzu </option>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   //isLogin state based on localStorage value
@@ -22,12 +22,14 @@ export default function Navbar() {
     console.log(JSON.parse(localStorage.getItem("isLogin")));
   };
 
+  const navigate = useNavigate();
   const handleLogout = () => {
     console.log(JSON.parse(localStorage.getItem("isLogin")));
     setIsLogin(false);
     localStorage.setItem("isLogin", JSON.stringify("notLogin"));
     setIsDropdownOpen(false);
     console.log(JSON.parse(localStorage.getItem("isLogin")));
+    navigate("/");
   };
 
   useEffect(() => {

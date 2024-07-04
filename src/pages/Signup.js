@@ -1,7 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  const handleSignup = () => {
+    localStorage.setItem("isLogin", JSON.stringify("isLogin"));
+    navigate("/preprofile");
+  };
+
   return (
     <div className="flex w-full h-screen bg-gray-200">
       <div className="w-full flex items-center justify-center lg:w-1/2">
@@ -36,11 +43,14 @@ export default function Signup() {
           </div>
 
           <div className="mt-8 flex flex-col gap-y-4">
-            <Link to={"/preprofile"}>
-              <button className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700">
-                Sign Up
-              </button>
-            </Link>
+            {/* <Link to={"/preprofile"}> */}
+            <button
+              className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700"
+              onClick={handleSignup}
+            >
+              Sign Up
+            </button>
+            {/* </Link> */}
           </div>
         </div>
       </div>
