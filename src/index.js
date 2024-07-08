@@ -15,6 +15,7 @@ import Preprofile from "./pages/Preprofile";
 import Profile from "./pages/Profile";
 import Message from "./pages/Message";
 import MatchPopup from "./components/MatchPopup";
+import ListMessage from "./pages/ListMessage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/homepage",
     element: <Homepage />,
+  },
+  {
+    path: "/messages",
+    element: <ListMessage />,
   },
   {
     path: "/message",

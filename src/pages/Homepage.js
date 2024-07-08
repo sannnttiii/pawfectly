@@ -6,6 +6,7 @@ import Select from "react-select";
 
 function Homepage() {
   const [petTypeIsDog, setPetTypeIsDog] = useState(true);
+  
 
   useEffect(() => {
     const petType = localStorage.getItem("petType");
@@ -20,6 +21,7 @@ function Homepage() {
 
   const options = petTypeIsDog
     ? [
+        { value: "all", label: "All" },
         { value: "golden", label: "Golden Retriever" },
         { value: "bordercollie", label: "Border Collie" },
         { value: "labrador", label: "Labrador Retriever" },
@@ -36,6 +38,7 @@ function Homepage() {
         { value: "other", label: "Other" },
       ]
     : [
+        { value: "all", label: "All" },
         { value: "persian", label: "Persian" },
         { value: "anggora", label: "Anggora" },
         { value: "siam", label: "Siam" },
@@ -54,12 +57,13 @@ function Homepage() {
     setSelectedOption(selectedOption);
   };
 
-  const filteredData = selectedOption
-    ? dataPet.filter(
-        (item) =>
-          item.isDog === petTypeIsDog && item.ras === selectedOption.value
-      )
-    : dataPet.filter((item) => item.isDog === petTypeIsDog);
+  const filteredData =
+    selectedOption && selectedOption.value !== "all"
+      ? dataPet.filter(
+          (item) =>
+            item.isDog === petTypeIsDog && item.ras === selectedOption.value
+        )
+      : dataPet.filter((item) => item.isDog === petTypeIsDog);
 
   const cards = filteredData.map((item) => {
     return <CardPet key={item.id} item={item} />;

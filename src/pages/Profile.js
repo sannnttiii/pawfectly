@@ -39,7 +39,7 @@ function Profile() {
               }}
             />
             <label className="text-lg font-medium" htmlFor="petType">
-              Pet Type
+              Pet Breeds
             </label>
 
             <select
@@ -47,7 +47,7 @@ function Profile() {
               className="w-full border-2 border-gray-100 rounded-xl p-4 bg-transparent"
             >
               <option value="" disabled>
-                Select pet type
+                Select pet breeds
               </option>
               {petTypeIsDog ? (
                 <>
@@ -80,6 +80,21 @@ function Profile() {
                   <option value="other">Other</option>
                 </>
               )}
+            </select>
+
+            <label className="text-lg font-medium" htmlFor="Gender">
+              Gender
+            </label>
+
+            <select
+              id="Gender"
+              className="w-full border-2 border-gray-100 rounded-xl p-4 bg-transparent"
+            >
+              <option value="" disabled>
+                Select Gender
+              </option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
             </select>
 
             <label className="text-lg font-medium">Name</label>

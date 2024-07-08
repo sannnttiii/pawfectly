@@ -6,7 +6,7 @@ export default function NavMessage() {
     <div>
       <nav className="fixed w-full top-0 flex flex-wrap items-center justify-between h-20 px-6 bg-white shadow-md">
         <div className="flex items-center">
-          <Link to={"/homepage"}>
+          <Link to={"/messages"}>
             <div className="transform w-full ">
               <img
                 src="../images/back-arrow.svg"
