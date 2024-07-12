@@ -6,7 +6,7 @@ function Profile() {
 
   useEffect(() => {
     const petType = localStorage.getItem("petType");
-    if (petType === "isCat") {
+    if (petType === "cat") {
       setPetTypeIsDog(false);
     } else {
       setPetTypeIsDog(true);
@@ -34,7 +34,6 @@ function Profile() {
               className="w-full border-2 border-gray-100 rounded-xl p-4 bg-transparent"
               onChange={(e) => {
                 const file = e.target.files[0];
-                // Handle file upload logic here
                 console.log(file);
               }}
             />

@@ -14,7 +14,7 @@ import (
 var conn *pgx.Conn
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	rows, err := conn.Query(context.Background(), "SELECT email, password FROM users")
+	rows, err := conn.Query(context.Background(), "SELECT email,password,pet_type FROM users")
 	if err != nil {
 		http.Error(w, "Unable to fetch users", http.StatusInternalServerError)
 		return
@@ -24,12 +24,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	var users []map[string]string
 
 	for rows.Next() {
-		var email, password string
-		if err := rows.Scan(&email, &password); err != nil {
+		var email, password, pet_type string
+		if err := rows.Scan(&email, &password, &pet_type); err != nil {
 			http.Error(w, "Error scanning row", http.StatusInternalServerError)
 			return
 		}
-		user := map[string]string{"email": email, "password": password}
+		user := map[string]string{"email": email, "password": password, "pet_type": pet_type}
 		users = append(users, user)
 	}
 
@@ -45,9 +45,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 type User struct {
-	// ID       int    `json:"id"`
+	ID       int    `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	PetType  string `json:"petType"`
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,6 +77,37 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func setPetTypeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	_, err = conn.Exec(context.Background(), "UPDATE users SET pet_type = $1 WHERE id=$2", user.PetType, user.ID)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println("update success!, ", user.PetType, user.ID)
+
+	if err != nil {
+		log.Printf("Error executing query: %v\n", err)
+		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{"message": "Set PetType successfully", "user_id": user.ID}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func main() {
 	var err error
 	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
@@ -84,6 +116,7 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 	http.HandleFunc("/api/signup", signupHandler)
+	http.HandleFunc("/api/setPetType", setPetTypeHandler)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},

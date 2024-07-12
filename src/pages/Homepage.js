@@ -10,7 +10,7 @@ function Homepage() {
 
   useEffect(() => {
     const petType = localStorage.getItem("petType");
-    if (petType === "isCat") {
+    if (petType === "cat") {
       setPetTypeIsDog(false);
     } else {
       setPetTypeIsDog(true);
