@@ -4,8 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strconv"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/rs/cors"
@@ -45,10 +50,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	PetType  string `json:"petType"`
+	ID        int    `json:"id"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	PetType   string `json:"petType"`
+	PetImage  string `json:"image"`
+	PetBreeds string `json:"petBreeds"`
+	Gender    string `json:"gender"`
+	Name      string `json:"name"`
+	Age       int    `json:"age"`
+	City      string `json:"city"`
+	Bio       string `json:"bio"`
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -108,6 +120,80 @@ func setPetTypeHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func setProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseMultipartForm(10 << 20) // Limit your max input length to 10 MB
+	if err != nil {
+		fmt.Println("Error parsing form data:", err)
+		http.Error(w, "Invalid form data", http.StatusBadRequest)
+		return
+	}
+
+	var user User
+	user.PetBreeds = r.FormValue("pet_breeds")
+	user.Gender = r.FormValue("gender")
+	user.Name = r.FormValue("name")
+	user.City = r.FormValue("city")
+	user.Bio = r.FormValue("bio")
+
+	file, handler, err := r.FormFile("image")
+	if err == nil {
+		defer file.Close()
+		imagePath := filepath.Join("images", "profpic")
+		if _, err := os.Stat(imagePath); os.IsNotExist(err) {
+			os.MkdirAll(imagePath, os.ModePerm)
+		}
+		fileName := fmt.Sprintf("%d-%s", user.ID, filepath.Base(handler.Filename))
+		filePath := filepath.Join(imagePath, fileName)
+		f, err := os.Create(filePath)
+		if err != nil {
+			fmt.Println("Error creating file:", err)
+			http.Error(w, "Failed to save image", http.StatusInternalServerError)
+			return
+		}
+		defer f.Close()
+		io.Copy(f, file)
+		user.PetImage = fileName
+	}
+
+	age, err := strconv.Atoi(r.FormValue("age"))
+	if err != nil {
+		fmt.Println("Error converting age:", err)
+		http.Error(w, "Invalid age value", http.StatusBadRequest)
+		return
+	}
+	user.Age = age
+	fmt.Println(reflect.TypeOf(age))
+
+	id, err := strconv.Atoi(r.FormValue("id"))
+	if err != nil {
+		fmt.Println("Error converting id:", err)
+		http.Error(w, "Invalid id value", http.StatusBadRequest)
+		return
+	}
+	user.ID = id
+
+	fmt.Println("USER ", user.PetImage, user.PetBreeds, user.Gender, user.Name, user.Age, user.City, user.Bio, user.ID)
+
+	_, err = conn.Exec(context.Background(), "UPDATE users SET pet_breeds=$1, gender=$2, name=$3, age=$4, city=$5, bio=$6, image_pet=$7 WHERE id=$8",
+		user.PetBreeds, user.Gender, user.Name, user.Age, user.City, user.Bio, user.PetImage, user.ID)
+	if err != nil {
+		fmt.Println("Database update error:", err)
+		http.Error(w, "Failed to update profile", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("Update success! User:", user.PetType, user.ID)
+
+	response := map[string]interface{}{"message": "Profile updated successfully", "user_id": user.ID}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func main() {
 	var err error
 	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
@@ -117,6 +203,7 @@ func main() {
 	defer conn.Close(context.Background())
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/setPetType", setPetTypeHandler)
+	http.HandleFunc("/api/setProfile", setProfile)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},

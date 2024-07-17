@@ -11,7 +11,7 @@ export default function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      console.log(password, confirmPassword);
+      // console.log(password, confirmPassword);
       if (password === confirmPassword) {
         const response = await fetch("http://localhost:8080/api/signup", {
           method: "POST",
@@ -26,7 +26,7 @@ export default function Signup() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
           localStorage.setItem("isLogin", JSON.stringify("isLogin"));
           localStorage.setItem("userID", data.user_id);
           navigate("/preprofile");

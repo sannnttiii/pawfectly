@@ -7,7 +7,7 @@ CREATE TABLE "users"(
     "pet_breeds" VARCHAR(255) NULL,
     "gender" VARCHAR(255) NULL DEFAULT 'male',
     "name" VARCHAR(255) NULL,
-    "age" VARCHAR(255) NULL,
+    "age" INTEGER NULL,
     "city" VARCHAR(255) NULL,
     "bio" VARCHAR(255) NULL
 );
