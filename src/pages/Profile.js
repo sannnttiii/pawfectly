@@ -37,9 +37,9 @@ function Profile() {
     formData.append("bio", bio);
     formData.append("id", id);
 
-    formData.forEach((value, key) => {
-      console.log(key + " " + value);
-    });
+    // formData.forEach((value, key) => {
+    //   console.log(key + " " + value);
+    // });
     try {
       const response = await fetch("http://localhost:8080/api/setProfile", {
         method: "POST",

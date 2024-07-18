@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -77,14 +78,15 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID int
-	err = conn.QueryRow(context.Background(), "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id", user.Email, user.Password).Scan(&userID)
+	var encodedString = base64.StdEncoding.EncodeToString([]byte(user.Password))
+	err = conn.QueryRow(context.Background(), "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id", user.Email, encodedString).Scan(&userID)
 	if err != nil {
 		log.Printf("Error executing query: %v\n", err)
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
 
-	response := map[string]interface{}{"message": "User created successfully", "user_id": userID}
+	response := map[string]interface{}{"message": "User created successfully", "user_id": userID, "encode": encodedString}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -194,6 +196,33 @@ func setProfile(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	var userID int
+	var encodedString = base64.StdEncoding.EncodeToString([]byte(user.Password))
+	err = conn.QueryRow(context.Background(), "SELECT id FROM users WHERE email=$1 and password=$2", user.Email, encodedString).Scan(&userID)
+	if err != nil {
+		log.Printf("Error executing query: %v\n", err)
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{"message": "Login successfully", "user_id": userID, "encode": encodedString}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func main() {
 	var err error
 	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
@@ -204,6 +233,7 @@ func main() {
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/setPetType", setPetTypeHandler)
 	http.HandleFunc("/api/setProfile", setProfile)
+	http.HandleFunc("/api/login", loginHandler)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
