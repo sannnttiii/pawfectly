@@ -7,6 +7,7 @@ export default function Navbar() {
     JSON.parse(localStorage.getItem("isLogin")) === "isLogin"
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [imagePet, setImagePet] = useState("");
 
   const toggleLogin = () => {
     console.log(JSON.parse(localStorage.getItem("isLogin")));
@@ -24,7 +25,7 @@ export default function Navbar() {
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    console.log(JSON.parse(localStorage.getItem("isLogin")));
+    localStorage.clear();
     setIsLogin(false);
     localStorage.setItem("isLogin", JSON.stringify("notLogin"));
     setIsDropdownOpen(false);
@@ -33,10 +34,11 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    // ensure that isLogin state is consistent with localStorage on initial load
     const loginStatus = JSON.parse(localStorage.getItem("isLogin"));
+    const storedImagePet = localStorage.getItem("imagePet");
     if (loginStatus === "isLogin") {
       setIsLogin(true);
+      setImagePet(storedImagePet);
     } else {
       setIsLogin(false);
     }
@@ -53,8 +55,8 @@ export default function Navbar() {
       {isLogin ? (
         <div className="relative">
           <img
-            src="../images/dogpic3.jpeg"
-            alt="User 2"
+            src={`http://localhost:8082/images/profpic/${imagePet}`}
+            alt="Image"
             className="w-16 h-16 rounded-full border-4 border-white shadow-lg cursor-pointer"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           />

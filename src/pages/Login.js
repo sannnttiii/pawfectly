@@ -10,7 +10,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/api/login", {
+      const response = await fetch("http://localhost:8082/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,6 +25,9 @@ function Login() {
         const data = await response.json();
         console.log(data);
         localStorage.setItem("userID", data.user_id);
+        localStorage.setItem("imagePet", data.image_pet);
+
+        localStorage.setItem("petType", data.petType);
         localStorage.setItem("isLogin", JSON.stringify("isLogin"));
         navigate("/homepage");
         console.log("successfully login");
@@ -51,51 +54,52 @@ function Login() {
   return (
     <div className="flex w-full h-screen bg-gray-200">
       <div className="w-full flex items-center justify-center lg:w-1/2">
-        <form onSubmit={handleLogin}>
-          <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray w-4/5">
-            <h1 className="text-4xl font-semibold">Welcome Back</h1>
-            <p className="font-medium text-lg text-gray-500 mt-4">
-              Welcome back! please enter your details.
-            </p>
-            <div className="mt-8">
-              <label className="text-lg font-medium">Email</label>
-              <input
-                className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                onChange={handleChange}
-              />
-            </div>
-
+        <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray w-4/5">
+          <h1 className="text-4xl font-semibold">Welcome Back</h1>
+          <p className="font-medium text-lg text-gray-500 mt-4">
+            Welcome back! please enter your details.
+          </p>
+          <form onSubmit={handleLogin}>
             <div>
-              <label className="text-lg font-medium">Password</label>
-              <input
-                className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                onChange={handleChange}
-              />
-            </div>
-            {errorAlert && <span className="errorAlert">{errorAlert}</span>}
+              <div className="mt-8">
+                <label className="text-lg font-medium">Email</label>
+                <input
+                  className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  onChange={handleChange}
+                />
+              </div>
 
-            <div className="mt-4 flex items-end justify-end">
-              <button className="font-normal text-base text-orange-500 ">
-                Forgot Password?
-              </button>
-            </div>
-            <div className="mt-8 flex flex-col gap-y-4">
-              <button
-                className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700"
-                type="submit"
-              >
-                Sign In
-              </button>
+              <div>
+                <label className="text-lg font-medium">Password</label>
+                <input
+                  className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  onChange={handleChange}
+                />
+              </div>
+              {errorAlert && <span className="errorAlert">{errorAlert}</span>}
 
-              <Link to={"/signup"}>
-                <button className="flex items-center justify-center gap-2  hover:bg-gray-100 transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 w-full">
-                  {/* <svg
+              <div className="mt-4 flex items-end justify-end">
+                <button className="font-normal text-base text-orange-500 ">
+                  Forgot Password?
+                </button>
+              </div>
+              <div className="mt-8 flex flex-col gap-y-4">
+                <button
+                  className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700"
+                  type="submit"
+                >
+                  Sign In
+                </button>
+
+                <Link to={"/signup"}>
+                  <button className="flex items-center justify-center gap-2  hover:bg-gray-100 transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 w-full">
+                    {/* <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -119,12 +123,13 @@ function Login() {
                   fill="#FBBC05"
                 />
               </svg> Sign in with Google*/}
-                  Create an account
-                </button>
-              </Link>
+                    Create an account
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
       <div className=" lg:flex h-full w-1/2 hidden relative items-center justify-center">
         {/* <div className="w-60 h-60 bg-gradient-to-tr from-orange-500 to-yellow-500 rounded-full animate-bounce"></div> */}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -15,9 +14,21 @@ import (
 
 	"github.com/jackc/pgx/v4"
 	"github.com/rs/cors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var conn *pgx.Conn
+
+// Encrypt password dengan bcrypt
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	rows, err := conn.Query(context.Background(), "SELECT email,password,pet_type FROM users")
@@ -65,6 +76,7 @@ type User struct {
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -78,7 +90,13 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID int
-	var encodedString = base64.StdEncoding.EncodeToString([]byte(user.Password))
+	// var encodedString = base64.StdEncoding.EncodeToString([]byte(user.Password))
+	encodedString, err := HashPassword(user.Password)
+	if err != nil {
+		fmt.Println("Error hashing password:", err)
+		return
+	}
+
 	err = conn.QueryRow(context.Background(), "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id", user.Email, encodedString).Scan(&userID)
 	if err != nil {
 		log.Printf("Error executing query: %v\n", err)
@@ -181,7 +199,7 @@ func setProfile(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("USER ", user.PetImage, user.PetBreeds, user.Gender, user.Name, user.Age, user.City, user.Bio, user.ID)
 
-	_, err = conn.Exec(context.Background(), "UPDATE users SET pet_breeds=$1, gender=$2, name=$3, age=$4, city=$5, bio=$6, image_pet=$7 WHERE id=$8",
+	_, err = conn.Exec(context.Background(), "UPDATE users SET pet_breeds=$1, gender=$2, name=$3, age=$4, city=$5, bio=$6, image_pet=COALESCE(NULLIF($7, ''), image_pet) WHERE id=$8",
 		user.PetBreeds, user.Gender, user.Name, user.Age, user.City, user.Bio, user.PetImage, user.ID)
 	if err != nil {
 		fmt.Println("Database update error:", err)
@@ -189,7 +207,7 @@ func setProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Update success! User:", user.PetType, user.ID)
+	fmt.Println("Update success! User:", user.PetType, user.PetImage)
 
 	response := map[string]interface{}{"message": "Profile updated successfully", "user_id": user.ID}
 	w.Header().Set("Content-Type", "application/json")
@@ -210,17 +228,100 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID int
-	var encodedString = base64.StdEncoding.EncodeToString([]byte(user.Password))
-	err = conn.QueryRow(context.Background(), "SELECT id FROM users WHERE email=$1 and password=$2", user.Email, encodedString).Scan(&userID)
+	var storedHash string
+	var petType string
+	var imagePet string
+
+	err = conn.QueryRow(context.Background(), "SELECT id, password, pet_type, image_pet FROM users WHERE email=$1", user.Email).Scan(&userID, &storedHash, &petType, &imagePet)
 	if err != nil {
-		log.Printf("Error executing query: %v\n", err)
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		log.Printf("Error fetching user: %v\n", err)
+		http.Error(w, "User not found", http.StatusUnauthorized)
 		return
 	}
 
-	response := map[string]interface{}{"message": "Login successfully", "user_id": userID, "encode": encodedString}
+	if !CheckPasswordHash(user.Password, storedHash) {
+		log.Println("Invalid password")
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	response := map[string]interface{}{"message": "Login successful", "user_id": userID, "petType": petType, "image_pet": imagePet}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func fetchPetsHandler(w http.ResponseWriter, r *http.Request) {
+	rows, err := conn.Query(context.Background(), "SELECT id, pet_type, name, gender, age, pet_breeds, image_pet, city, bio FROM users")
+	if err != nil {
+		http.Error(w, `{"error": "Unable to fetch pets"}`, http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var pets []map[string]interface{}
+
+	for rows.Next() {
+		var id, age int
+		var petType, name, gender, petBreeds, imagePet, city, bio string
+
+		if err := rows.Scan(&id, &petType, &name, &gender, &age, &petBreeds, &imagePet, &city, &bio); err != nil {
+			log.Printf("Error scanning row: %v", err) // Log detailed error
+			http.Error(w, `{"error": "Error scanning row"}`, http.StatusInternalServerError)
+			return
+		}
+
+		pet := map[string]interface{}{
+			"id":        id,
+			"petType":   petType,
+			"name":      name,
+			"gender":    gender,
+			"age":       age,
+			"petBreeds": petBreeds,
+			"image_pet": imagePet,
+			"city":      city,
+			"bio":       bio,
+		}
+		pets = append(pets, pet)
+	}
+
+	if rows.Err() != nil {
+		log.Printf("Error iterating rows: %v", rows.Err())
+		http.Error(w, `{"error": "Error iterating rows"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(pets); err != nil {
+		http.Error(w, `{"error": "Error encoding JSON"}`, http.StatusInternalServerError)
+	}
+}
+
+func fetchProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := r.URL.Query().Get("id")
+	if userID == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	var user User
+	err := conn.QueryRow(context.Background(), "SELECT id, email, password, pet_type, image_pet, pet_breeds, gender, name, age, city, bio FROM users WHERE id=$1", userID).Scan(
+		&user.ID, &user.Email, &user.Password, &user.PetType, &user.PetImage, &user.PetBreeds, &user.Gender, &user.Name, &user.Age, &user.City, &user.Bio,
+	)
+	if err != nil {
+		log.Printf("Error fetching user: %v\n", err)
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func main() {
@@ -230,10 +331,16 @@ func main() {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer conn.Close(context.Background())
+	// Handler untuk melayani file gambar dari go_backend/images/profpic
+	fileServer := http.FileServer(http.Dir("./images/profpic"))
+	http.Handle("/images/profpic/", http.StripPrefix("/images/profpic/", fileServer))
+
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/setPetType", setPetTypeHandler)
 	http.HandleFunc("/api/setProfile", setProfile)
 	http.HandleFunc("/api/login", loginHandler)
+	http.HandleFunc("/api/pets", fetchPetsHandler)
+	http.HandleFunc("/api/getProfile", fetchProfile)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
@@ -245,8 +352,8 @@ func main() {
 	// Wrap your handlers with the CORS middleware
 	handler := c.Handler(http.DefaultServeMux)
 
-	fmt.Println("Server is running on port 8080...")
-	if err := http.ListenAndServe(":8080", handler); err != nil {
+	fmt.Println("Server is running on port 8082...")
+	if err := http.ListenAndServe(":8082", handler); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

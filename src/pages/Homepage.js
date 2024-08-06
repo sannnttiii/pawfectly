@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import CardPet from "../components/CardPet";
-import dataPet from "../dataPet";
 import Select from "react-select";
 
 function Homepage() {
   const [petTypeIsDog, setPetTypeIsDog] = useState(true);
-  
+  const [pets, setPets] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     const petType = localStorage.getItem("petType");
@@ -16,42 +16,51 @@ function Homepage() {
       setPetTypeIsDog(true);
     }
 
-    // console.log("Pet Type", petTypeIsDog);
+    const fetchPets = async () => {
+      try {
+        const response = await fetch("http://localhost:8082/api/pets");
+        const data = await response.json();
+        console.log(data);
+        setPets(data);
+      } catch (error) {
+        console.error("Error fetching pet data:", error);
+      }
+    };
+
+    fetchPets();
   }, []);
 
   const options = petTypeIsDog
     ? [
         { value: "all", label: "All" },
-        { value: "golden", label: "Golden Retriever" },
-        { value: "bordercollie", label: "Border Collie" },
-        { value: "labrador", label: "Labrador Retriever" },
-        { value: "poodle", label: "Poodle" },
-        { value: "shihtzu", label: "Shih Tzu" },
-        { value: "beagle", label: "Beagle" },
-        { value: "german", label: "German Shepherd" },
-        { value: "bulldog", label: "Bulldog" },
-        { value: "corgi", label: "Corgi" },
-        { value: "chihuahua", label: "Chihuahua" },
-        { value: "pomeranian", label: "Pomeranian" },
-        { value: "husky", label: "Siberian Husky" },
-        { value: "mix", label: "Mix" },
-        { value: "other", label: "Other" },
+        { value: "Golden Retriever", label: "Golden Retriever" },
+        { value: "Border Collie", label: "Border Collie" },
+        { value: "Labrador Retriever", label: "Labrador Retriever" },
+        { value: "Poodle", label: "Poodle" },
+        { value: "Shih Tzu", label: "Shih Tzu" },
+        { value: "Beagle", label: "Beagle" },
+        { value: "German Shepherd", label: "German Shepherd" },
+        { value: "Bulldog", label: "Bulldog" },
+        { value: "Corgi", label: "Corgi" },
+        { value: "Chihuahua", label: "Chihuahua" },
+        { value: "Pomeranian", label: "Pomeranian" },
+        { value: "Siberian Husky", label: "Siberian Husky" },
+        { value: "Mix", label: "Mix" },
+        { value: "Other", label: "Other" },
       ]
     : [
         { value: "all", label: "All" },
-        { value: "persian", label: "Persian" },
-        { value: "anggora", label: "Anggora" },
-        { value: "siam", label: "Siam" },
-        { value: "ragdoll", label: "Ragdoll" },
-        { value: "himalaya", label: "Himalaya" },
-        { value: "british", label: "British Shorthair" },
-        { value: "american", label: "American Shorthair" },
-        { value: "scottish", label: "Scottish Fold" },
-        { value: "mix", label: "Mix" },
-        { value: "other", label: "Other" },
+        { value: "Persian", label: "Persian" },
+        { value: "Anggora", label: "Anggora" },
+        { value: "Siam", label: "Siam" },
+        { value: "Ragdoll", label: "Ragdoll" },
+        { value: "Himalaya", label: "Himalaya" },
+        { value: "British Shorthair", label: "British Shorthair" },
+        { value: "American Shorthair", label: "American Shorthair" },
+        { value: "Scottish Fold", label: "Scottish Fold" },
+        { value: "Mix", label: "Mix" },
+        { value: "Other", label: "Other" },
       ];
-
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const handleChangeFilter = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -59,15 +68,16 @@ function Homepage() {
 
   const filteredData =
     selectedOption && selectedOption.value !== "all"
-      ? dataPet.filter(
+      ? pets.filter(
           (item) =>
-            item.isDog === petTypeIsDog && item.ras === selectedOption.value
+            (petTypeIsDog ? "dog" : "cat") === item.petType &&
+            item.petBreeds === selectedOption.value
         )
-      : dataPet.filter((item) => item.isDog === petTypeIsDog);
+      : pets.filter((item) => (petTypeIsDog ? "dog" : "cat") === item.petType);
 
-  const cards = filteredData.map((item) => {
-    return <CardPet key={item.id} item={item} />;
-  });
+  const cards = filteredData.map((item) => (
+    <CardPet key={item.id} item={item} />
+  ));
 
   return (
     <div>

@@ -13,15 +13,18 @@ export default function CardPet(pet) {
     <div className="rounded-xl shadow-lg mr-4 mb-4">
       <div className="p-5 flex flex-col">
         <div className="rounded-xl over">
-          <img src={`../images/${pet.item.image}`} alt="Image" />
+          <img
+            src={`http://localhost:8082/images/profpic/${pet.item.image_pet}`}
+            alt="Image"
+          />
         </div>
         <h3 className="text-2xl md:text-3xl font-medium mt-3">
           {pet.item.name}, {pet.item.age}th
         </h3>
         <div className="flex justify-between items-stretch text-sm text-slate-600">
-          <p>{pet.item.location}</p> <p>{pet.item.ras}</p>
+          <p>{pet.item.city}</p> <p>{pet.item.petBreeds}</p>
         </div>
-        <p className="text-slate-500 mt-3">{pet.item.description}</p>
+        <p className="text-slate-500 mt-3">{pet.item.bio}</p>
       </div>
       <div className="m-auto mb-4 mt-0 flex justify-center">
         <button
