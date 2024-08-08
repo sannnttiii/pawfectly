@@ -251,7 +251,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchPetsHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := conn.Query(context.Background(), "SELECT id, pet_type, name, gender, age, pet_breeds, image_pet, city, bio FROM users")
+	userID := r.URL.Query().Get("id")
+	if userID == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+	rows, err := conn.Query(context.Background(), "SELECT id, pet_type, name, gender, age, pet_breeds, image_pet, city, bio FROM users where id <> $1", userID)
 	if err != nil {
 		http.Error(w, `{"error": "Unable to fetch pets"}`, http.StatusInternalServerError)
 		return
@@ -265,7 +270,7 @@ func fetchPetsHandler(w http.ResponseWriter, r *http.Request) {
 		var petType, name, gender, petBreeds, imagePet, city, bio string
 
 		if err := rows.Scan(&id, &petType, &name, &gender, &age, &petBreeds, &imagePet, &city, &bio); err != nil {
-			log.Printf("Error scanning row: %v", err) // Log detailed error
+			log.Printf("Error scanning row: %v", err)
 			http.Error(w, `{"error": "Error scanning row"}`, http.StatusInternalServerError)
 			return
 		}
@@ -324,6 +329,114 @@ func fetchProfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func setMatch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extracting the user IDs and status from the URL query
+	idLogin := r.URL.Query().Get("userid1")
+	if idLogin == "" {
+		http.Error(w, "userid1 is required", http.StatusBadRequest)
+		return
+	}
+
+	idChoosen := r.URL.Query().Get("userid2")
+	if idChoosen == "" {
+		http.Error(w, "userid2 is required", http.StatusBadRequest)
+		return
+	}
+
+	status := r.URL.Query().Get("status")
+	if status == "" {
+		http.Error(w, "Status is required", http.StatusBadRequest)
+		return
+	}
+
+	// Check if a record exists
+	var currentStatus string
+	var respons string
+	err := conn.QueryRow(context.Background(), `
+		SELECT status 
+		FROM matches 
+		WHERE (userid1 = $1 AND userid2 = $2)
+		   OR (userid1 = $2 AND userid2 = $1)
+	`, idLogin, idChoosen).Scan(&currentStatus)
+
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			// if not found and user want to match, insert a new record with status 'pending'
+			if status == "match" {
+				_, err = conn.Exec(context.Background(), `
+					INSERT INTO matches (userid1, userid2, status)
+					VALUES ($1, $2, 'pending')
+				`, idLogin, idChoosen)
+				if err != nil {
+					log.Printf("Error inserting new match: %v\n", err)
+					http.Error(w, "Failed to insert new match", http.StatusInternalServerError)
+					return
+				}
+				respons = "pending"
+
+			} else if status == "unmatch" {
+				// if not found and user dont want to match, insert a new record with status 'unmatch'
+				_, err = conn.Exec(context.Background(), `
+					INSERT INTO matches (userid1, userid2, status)
+					VALUES ($1, $2, 'unmatch')
+				`, idLogin, idChoosen)
+				if err != nil {
+					log.Printf("Error inserting new match: %v\n", err)
+					http.Error(w, "Failed to insert new match", http.StatusInternalServerError)
+					return
+				}
+				respons = "unmatch"
+			}
+		} else {
+			log.Printf("Error querying match: %v\n", err)
+			http.Error(w, "Failed to check match", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		// if exists user want to match, insert a new record with status 'pending'
+		if status == "match" {
+			if currentStatus == "pending" {
+				_, err = conn.Exec(context.Background(), `
+					UPDATE matches
+					SET status = 'match'
+					WHERE (userid1 = $1 AND userid2 = $2)
+					   OR (userid1 = $2 AND userid2 = $1)
+				`, idLogin, idChoosen)
+				if err != nil {
+					log.Printf("Error updating match to 'match': %v\n", err)
+					http.Error(w, "Failed to update match", http.StatusInternalServerError)
+					return
+				}
+				respons = "match"
+			}
+		} else if status == "unmatch" {
+			if currentStatus == "pending" {
+				_, err = conn.Exec(context.Background(), `
+					UPDATE matches
+					SET status = 'unmatch'
+					WHERE (userid1 = $1 AND userid2 = $2)
+					   OR (userid1 = $2 AND userid2 = $1)
+				`, idLogin, idChoosen)
+				if err != nil {
+					log.Printf("Error updating match to 'unmatch': %v\n", err)
+					http.Error(w, "Failed to update match", http.StatusInternalServerError)
+					return
+				}
+				respons = "unmatch"
+			}
+		}
+	}
+
+	response := map[string]interface{}{"message": "Match successfully processed", "respons": respons}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func main() {
 	var err error
 	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
@@ -341,6 +454,7 @@ func main() {
 	http.HandleFunc("/api/login", loginHandler)
 	http.HandleFunc("/api/pets", fetchPetsHandler)
 	http.HandleFunc("/api/getProfile", fetchProfile)
+	http.HandleFunc("/api/setMatch", setMatch)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},

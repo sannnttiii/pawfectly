@@ -4,9 +4,62 @@ import MatchPopup from "./MatchPopup";
 export default function CardPet(pet) {
   const [modal, setModal] = useState(false);
 
-  const toggleModal = () => {
+  const handleLove = (idChoosen) => {
     setModal(!modal);
-    console.log(modal);
+    // console.log(modal);
+
+    const setMatch = async () => {
+      try {
+        const idLogin = parseInt(localStorage.getItem("userID"));
+
+        const response = await fetch(
+          `http://localhost:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=match`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching pet data:", error);
+      }
+    };
+    setMatch();
+  };
+  const handleCancel = (idChoosen) => {
+    const setUnmatch = async () => {
+      try {
+        const idLogin = parseInt(localStorage.getItem("userID"));
+
+        const response = await fetch(
+          `http://localhost:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=unmatch`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching pet data:", error);
+      }
+    };
+    setUnmatch();
   };
 
   return (
@@ -29,7 +82,7 @@ export default function CardPet(pet) {
       <div className="m-auto mb-4 mt-0 flex justify-center">
         <button
           className="w-14 h-14 mr-4 transition hover:scale-110 "
-          onClick={toggleModal}
+          onClick={() => handleLove(pet.item.id)}
         >
           <img
             src="../images/love.svg"
@@ -42,10 +95,11 @@ export default function CardPet(pet) {
             src="../images/cancel.svg"
             alt="Cancel Icon"
             className="w-full h-full object-cover rounded-full"
+            onClick={() => handleCancel(pet.item.id)}
           />
         </button>
       </div>
-      <MatchPopup toggleModal={toggleModal} modal={modal} />
+      <MatchPopup toggleModal={() => handleLove(pet.item.id)} modal={modal} />
     </div>
   );
 }
