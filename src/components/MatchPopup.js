@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-function MatchPopup({ toggleModal, modal }) {
+function MatchPopup({ toggleModal, modal, profPicUserChoosen }) {
+  const storedImagePet = localStorage.getItem("imagePet");
+
   return (
     <>
       {modal && (
@@ -20,13 +22,13 @@ function MatchPopup({ toggleModal, modal }) {
               <div className="relative flex items-center justify-center mb-8">
                 <div className="relative flex items-center justify-center">
                   <img
-                    src="../images/dogpic2.jpeg"
-                    alt="User 1"
+                    src={`http://localhost:8082/images/profpic/${storedImagePet}`}
+                    alt="image"
                     className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
                   />
                   <img
-                    src="../images/dogpic3.jpeg"
-                    alt="User 2"
+                    src={`http://localhost:8082/images/profpic/${profPicUserChoosen}`}
+                    alt="image"
                     className="w-32 h-32 rounded-full border-4 border-white shadow-lg ml-8"
                   />
                 </div>

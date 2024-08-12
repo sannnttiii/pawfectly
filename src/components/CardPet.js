@@ -3,12 +3,11 @@ import MatchPopup from "./MatchPopup";
 
 export default function CardPet(pet) {
   const [modal, setModal] = useState(false);
+  const idLogin = parseInt(localStorage.getItem("userID"));
 
   const handleLove = (idChoosen) => {
     const setMatch = async () => {
       try {
-        const idLogin = parseInt(localStorage.getItem("userID"));
-
         const response = await fetch(
           `http://localhost:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=match`,
           {
@@ -104,7 +103,11 @@ export default function CardPet(pet) {
         </button>
       </div>
       {/* {modal && <MatchPopup toggleModal={() => setModal(false)} />} */}
-      <MatchPopup toggleModal={() => handleLove(pet.item.id)} modal={modal} />
+      <MatchPopup
+        toggleModal={() => handleLove(pet.item.id)}
+        modal={modal}
+        profPicUserChoosen={pet.item.image_pet}
+      />
     </div>
   );
 }
