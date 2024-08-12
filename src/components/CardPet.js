@@ -5,9 +5,6 @@ export default function CardPet(pet) {
   const [modal, setModal] = useState(false);
 
   const handleLove = (idChoosen) => {
-    setModal(!modal);
-    // console.log(modal);
-
     const setMatch = async () => {
       try {
         const idLogin = parseInt(localStorage.getItem("userID"));
@@ -28,11 +25,18 @@ export default function CardPet(pet) {
 
         const data = await response.json();
         console.log(data);
+        if (data.respons === "match") {
+          setModal(!modal);
+        }
       } catch (error) {
         console.error("Error fetching pet data:", error);
       }
     };
     setMatch();
+    if (modal) {
+      setModal(!modal);
+      window.location.reload();
+    }
   };
   const handleCancel = (idChoosen) => {
     const setUnmatch = async () => {
@@ -99,6 +103,7 @@ export default function CardPet(pet) {
           />
         </button>
       </div>
+      {/* {modal && <MatchPopup toggleModal={() => setModal(false)} />} */}
       <MatchPopup toggleModal={() => handleLove(pet.item.id)} modal={modal} />
     </div>
   );

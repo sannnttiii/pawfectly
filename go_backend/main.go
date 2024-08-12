@@ -256,7 +256,21 @@ func fetchPetsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "User ID is required", http.StatusBadRequest)
 		return
 	}
-	rows, err := conn.Query(context.Background(), "SELECT id, pet_type, name, gender, age, pet_breeds, image_pet, city, bio FROM users where id <> $1", userID)
+
+	query := `
+		SELECT u.id, u.pet_type, u.name, u.gender, u.age, u.pet_breeds, u.image_pet, u.city, u.bio
+		FROM users u
+		WHERE u.id <> $1
+		AND NOT EXISTS (
+			SELECT 1 
+			FROM matches m 
+			WHERE (m.userid1 = $1 AND m.userid2 = u.id)
+			   OR (m.userid1 = u.id AND m.userid2 = $1 AND status='match')
+			   OR (m.userid1 = u.id AND m.userid2 = $1 AND status='unmatch')
+		);
+	`
+
+	rows, err := conn.Query(context.Background(), query, userID)
 	if err != nil {
 		http.Error(w, `{"error": "Unable to fetch pets"}`, http.StatusInternalServerError)
 		return

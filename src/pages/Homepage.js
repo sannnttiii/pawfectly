@@ -23,9 +23,10 @@ function Homepage() {
         const response = await fetch(`http://localhost:8082/api/pets?id=${id}`);
         const data = await response.json();
         console.log(data);
-        setPets(data);
+        setPets(data || []);
       } catch (error) {
         console.error("Error fetching pet data:", error);
+        setPets([]);
       }
     };
 
@@ -68,14 +69,19 @@ function Homepage() {
     setSelectedOption(selectedOption);
   };
 
-  const filteredData =
-    selectedOption && selectedOption.value !== "all"
-      ? pets.filter(
-          (item) =>
-            (petTypeIsDog ? "dog" : "cat") === item.petType &&
-            item.petBreeds === selectedOption.value
-        )
-      : pets.filter((item) => (petTypeIsDog ? "dog" : "cat") === item.petType);
+  let filteredData = [];
+  if (pets.length > 0) {
+    filteredData =
+      selectedOption && selectedOption.value !== "all"
+        ? pets.filter(
+            (item) =>
+              (petTypeIsDog ? "dog" : "cat") === item.petType &&
+              item.petBreeds === selectedOption.value
+          )
+        : pets.filter(
+            (item) => (petTypeIsDog ? "dog" : "cat") === item.petType
+          );
+  }
 
   const cards = filteredData.map((item) => (
     <CardPet key={item.id} item={item} />
@@ -93,9 +99,18 @@ function Homepage() {
         />
       </div>
       <div className="flex items-center justify-center min-h-screen container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {cards}
-        </div>
+        {filteredData.length === 0 ? (
+          <div>
+            <p>
+              There's no pet to match for you. Please try adjusting your filters
+              or come back later.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {cards}
+          </div>
+        )}
       </div>
     </div>
   );
