@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strconv"
+	"time"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/rs/cors"
@@ -349,7 +350,6 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extracting the user IDs and status from the URL query
 	idLogin := r.URL.Query().Get("userid1")
 	if idLogin == "" {
 		http.Error(w, "userid1 is required", http.StatusBadRequest)
@@ -371,6 +371,8 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 	// Check if a record exists
 	var currentStatus string
 	var respons string
+	var matchesId int
+
 	err := conn.QueryRow(context.Background(), `
 		SELECT status 
 		FROM matches 
@@ -382,10 +384,11 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 		if err == pgx.ErrNoRows {
 			// if not found and user want to match, insert a new record with status 'pending'
 			if status == "match" {
-				_, err = conn.Exec(context.Background(), `
+				err = conn.QueryRow(context.Background(), `
 					INSERT INTO matches (userid1, userid2, status)
 					VALUES ($1, $2, 'pending')
-				`, idLogin, idChoosen)
+					RETURNING id
+				`, idLogin, idChoosen).Scan(&matchesId)
 				if err != nil {
 					log.Printf("Error inserting new match: %v\n", err)
 					http.Error(w, "Failed to insert new match", http.StatusInternalServerError)
@@ -395,10 +398,12 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 
 			} else if status == "unmatch" {
 				// if not found and user dont want to match, insert a new record with status 'unmatch'
-				_, err = conn.Exec(context.Background(), `
+				// If not found and user doesn't want to match, insert a new record with status 'unmatch'
+				err = conn.QueryRow(context.Background(), `
 					INSERT INTO matches (userid1, userid2, status)
 					VALUES ($1, $2, 'unmatch')
-				`, idLogin, idChoosen)
+					RETURNING id
+				`, idLogin, idChoosen).Scan(&matchesId)
 				if err != nil {
 					log.Printf("Error inserting new match: %v\n", err)
 					http.Error(w, "Failed to insert new match", http.StatusInternalServerError)
@@ -415,12 +420,13 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 		// if exists user want to match, insert a new record with status 'pending'
 		if status == "match" {
 			if currentStatus == "pending" {
-				_, err = conn.Exec(context.Background(), `
+				err = conn.QueryRow(context.Background(), `
 					UPDATE matches
 					SET status = 'match'
 					WHERE (userid1 = $1 AND userid2 = $2)
 					   OR (userid1 = $2 AND userid2 = $1)
-				`, idLogin, idChoosen)
+					RETURNING id
+				`, idLogin, idChoosen).Scan(&matchesId)
 				if err != nil {
 					log.Printf("Error updating match to 'match': %v\n", err)
 					http.Error(w, "Failed to update match", http.StatusInternalServerError)
@@ -430,12 +436,13 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 			}
 		} else if status == "unmatch" {
 			if currentStatus == "pending" {
-				_, err = conn.Exec(context.Background(), `
+				err = conn.QueryRow(context.Background(), `
 					UPDATE matches
 					SET status = 'unmatch'
 					WHERE (userid1 = $1 AND userid2 = $2)
 					   OR (userid1 = $2 AND userid2 = $1)
-				`, idLogin, idChoosen)
+					RETURNING id
+				`, idLogin, idChoosen).Scan(&matchesId)
 				if err != nil {
 					log.Printf("Error updating match to 'unmatch': %v\n", err)
 					http.Error(w, "Failed to update match", http.StatusInternalServerError)
@@ -446,9 +453,100 @@ func setMatch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	response := map[string]interface{}{"message": "Match successfully processed", "respons": respons}
+	response := map[string]interface{}{"message": "Match successfully processed", "respons": respons, "matchesId": matchesId}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func sendMessage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req struct {
+		Message   string `json:"message"`
+		MatchesID int    `json:"matchesId"`
+		SenderID  int    `json:"senderId"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	// Insert the message into the database
+	_, err := conn.Exec(context.Background(), `
+		INSERT INTO messages (matches_id, sender_id, message) 
+		VALUES ($1, $2, $3)
+	`, req.MatchesID, req.SenderID, req.Message)
+	if err != nil {
+		log.Printf("Error inserting message: %v\n", err)
+		http.Error(w, "Failed to insert message", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{"message": req.Message, "senderId": req.SenderID}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func getMessages(w http.ResponseWriter, r *http.Request) {
+	type Message struct {
+		ID        int       `json:"id"`
+		Message   string    `json:"message"`
+		SenderID  int       `json:"senderId"`
+		CreatedAt time.Time `json:"createdAt"` // Use time.Time for TIMESTAMP
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	matchesId := r.URL.Query().Get("matchesId")
+	if matchesId == "" {
+		http.Error(w, "matchesId is required", http.StatusBadRequest)
+		return
+	}
+
+	rows, err := conn.Query(context.Background(), `
+		SELECT id, message, sender_id, created_at
+		FROM messages
+		WHERE matches_id = $1
+		ORDER BY created_at
+	`, matchesId)
+	if err != nil {
+		log.Printf("Error querying messages: %v\n", err)
+		http.Error(w, "Failed to retrieve messages", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var messages []Message
+
+	for rows.Next() {
+		var m Message
+		if err := rows.Scan(&m.ID, &m.Message, &m.SenderID, &m.CreatedAt); err != nil {
+			log.Printf("Error scanning message: %v\n", err)
+			http.Error(w, "Failed to scan messages", http.StatusInternalServerError)
+			return
+		}
+		messages = append(messages, m)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating messages: %v\n", err)
+		http.Error(w, "Error retrieving messages", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
+		"messages": messages,
+	}); err != nil {
+		log.Printf("Error encoding response: %v\n", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func main() {
@@ -469,6 +567,8 @@ func main() {
 	http.HandleFunc("/api/pets", fetchPetsHandler)
 	http.HandleFunc("/api/getProfile", fetchProfile)
 	http.HandleFunc("/api/setMatch", setMatch)
+	http.HandleFunc("/api/sendMessage", sendMessage)
+	http.HandleFunc("/api/messages", getMessages)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},

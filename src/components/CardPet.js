@@ -4,6 +4,7 @@ import MatchPopup from "./MatchPopup";
 export default function CardPet(pet) {
   const [modal, setModal] = useState(false);
   const idLogin = parseInt(localStorage.getItem("userID"));
+  const [matchesId, setMatchesId] = useState(null);
 
   const handleLove = (idChoosen) => {
     const setMatch = async () => {
@@ -25,6 +26,7 @@ export default function CardPet(pet) {
         const data = await response.json();
         console.log(data);
         if (data.respons === "match") {
+          setMatchesId(data.matchesId);
           setModal(!modal);
         }
       } catch (error) {
@@ -106,7 +108,11 @@ export default function CardPet(pet) {
       <MatchPopup
         toggleModal={() => handleLove(pet.item.id)}
         modal={modal}
+        idUserChoosen={pet.item.id}
+        ageUserChoosen={pet.item.age}
+        nameUserChoosen={pet.item.name}
         profPicUserChoosen={pet.item.image_pet}
+        matchesId={matchesId}
       />
     </div>
   );

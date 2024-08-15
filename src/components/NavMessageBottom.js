@@ -1,13 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-export default function NavMessageBottom() {
-  const [message, setMessage] = React.useState(""); // State for message text
+export default function NavMessageBottom({ onNewMessage }) {
+  const [message, setMessage] = useState("");
+  const location = useLocation();
+  const senderId = parseInt(localStorage.getItem("userID"));
+  const { matchesId } = location.state || {};
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    // logic send msg to BubbleMessage
-    setMessage(""); // clear after send
+    if (message.trim() === "") return; // Prevent sending empty message
+
+    try {
+      const response = await fetch(`http://localhost:8082/api/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message, matchesId, senderId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+      console.log(message, matchesId, senderId);
+      const data = await response.json();
+      console.log(data);
+      onNewMessage(data); // update UI after send text
+
+      setMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   return (
@@ -19,7 +43,7 @@ export default function NavMessageBottom() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
-            className="flex-grow rounded-lg px-4 py-2  text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600 mr-2"
+            className="flex-grow rounded-lg px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600 mr-2"
           />
           <button
             type="submit"

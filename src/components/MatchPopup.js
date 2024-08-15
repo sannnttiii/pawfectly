@@ -1,7 +1,26 @@
-import { Link } from "react-router-dom";
-function MatchPopup({ toggleModal, modal, profPicUserChoosen }) {
+import { Link, useNavigate } from "react-router-dom";
+function MatchPopup({
+  toggleModal,
+  modal,
+  idUserChoosen,
+  nameUserChoosen,
+  ageUserChoosen,
+  profPicUserChoosen,
+  matchesId,
+}) {
   const storedImagePet = localStorage.getItem("imagePet");
-
+  const navigate = useNavigate();
+  const handleStartChat = () => {
+    navigate("/message", {
+      state: {
+        idUserChoosen: idUserChoosen,
+        nameUserChoosen: nameUserChoosen,
+        ageUserChoosen: ageUserChoosen,
+        profPicUserChoosen: profPicUserChoosen,
+        matchesId: matchesId,
+      },
+    });
+  };
   return (
     <>
       {modal && (
@@ -40,11 +59,14 @@ function MatchPopup({ toggleModal, modal, profPicUserChoosen }) {
                 Chat to Bara to see what his interests are and start playing
                 your favourite games together!
               </p>
-              <Link to={"/message"}>
-                <button className="bg-orange-500 text-white text-lg font-medium py-3 px-6 rounded-full shadow-md hover:bg-orange-700 transition duration-300">
-                  Start Chat
-                </button>
-              </Link>
+              {/* <Link to={"/message"}> */}
+              <button
+                onClick={handleStartChat}
+                className="bg-orange-500 text-white text-lg font-medium py-3 px-6 rounded-full shadow-md hover:bg-orange-700 transition duration-300"
+              >
+                Start Chat
+              </button>
+              {/* </Link> */}
             </div>
             {/* <button className="absolute top-3 right-10" onClick={toggleModal}>
               CLOSE
