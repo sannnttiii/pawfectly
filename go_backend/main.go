@@ -210,7 +210,7 @@ func setProfile(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Update success! User:", user.PetType, user.PetImage)
 
-	response := map[string]interface{}{"message": "Profile updated successfully", "user_id": user.ID}
+	response := map[string]interface{}{"message": "Profile updated successfully", "user_id": user.ID, "image_pet": user.PetImage}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -549,6 +549,72 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getListMessages(w http.ResponseWriter, r *http.Request) {
+	type ListMessage struct {
+		UserID          int       `json:"userId"`
+		NameUserChoosen string    `json:"nameUserChoosen"`
+		AgeUserChoosen  int       `json:"ageUserChoosen"`
+		MatchesID       int       `json:"matchesId"`
+		ProfilePic      string    `json:"profilePic"`
+		LastMessage     string    `json:"lastMessage"`
+		LastMessageTime time.Time `json:"lastMessageTime"`
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := r.URL.Query().Get("userID")
+	if userID == "" {
+		http.Error(w, "userID is required", http.StatusBadRequest)
+		return
+	}
+
+	rows, err := conn.Query(context.Background(), `
+	SELECT u.id AS user_id, u.name, u.age, u.image_pet AS image_pet, m.id AS match_id, msg.message, msg.created_at
+	FROM matches m
+	INNER JOIN users u
+	ON (m.userid1 = u.id OR m.userid2 = u.id) AND u.id <> $1
+	LEFT JOIN messages msg
+	ON msg.matches_id = m.id
+	ORDER BY msg.created_at DESC
+	LIMIT 1;
+	`, userID)
+	if err != nil {
+		log.Printf("Error querying messages: %v\n", err)
+		http.Error(w, "Failed to retrieve messages", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var messages []ListMessage
+
+	for rows.Next() {
+		var m ListMessage
+		if err := rows.Scan(&m.UserID, &m.NameUserChoosen, &m.AgeUserChoosen, &m.ProfilePic, &m.MatchesID, &m.LastMessage, &m.LastMessageTime); err != nil {
+			log.Printf("Error scanning message: %v\n", err)
+			http.Error(w, "Failed to scan messages", http.StatusInternalServerError)
+			return
+		}
+		messages = append(messages, m)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating messages: %v\n", err)
+		http.Error(w, "Error retrieving messages", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
+		"messages": messages,
+	}); err != nil {
+		log.Printf("Error encoding response: %v\n", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
+}
+
 func main() {
 	var err error
 	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
@@ -569,6 +635,7 @@ func main() {
 	http.HandleFunc("/api/setMatch", setMatch)
 	http.HandleFunc("/api/sendMessage", sendMessage)
 	http.HandleFunc("/api/messages", getMessages)
+	http.HandleFunc("/api/listRoom", getListMessages)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},

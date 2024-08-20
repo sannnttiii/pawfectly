@@ -77,7 +77,7 @@ export default function CardPet(pet) {
           />
         </div>
         <h3 className="text-2xl md:text-3xl font-medium mt-3">
-          {pet.item.name}, {pet.item.age}th
+          {pet.item.name}, {pet.item.age}yo
         </h3>
         <div className="flex justify-between items-stretch text-sm text-slate-600">
           <p>{pet.item.city}</p> <p>{pet.item.petBreeds}</p>

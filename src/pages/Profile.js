@@ -76,6 +76,7 @@ function Profile() {
       if (response.ok) {
         const data = await response.json();
         console.log(data);
+        localStorage.setItem("imagePet", data.image_pet);
         navigate("/homepage");
         console.log("Update profile success");
       } else {

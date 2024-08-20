@@ -1,32 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import RowMessage from "../components/RowMessage";
 
 export default function ListMessage() {
-  const dataMessages = [
-    {
-      id: 1,
-      profilePic: "../images/dogpic.jpeg",
-      lastMessage: "Hey, how are you?",
-      lastMessageTime: "12:34 PM",
-    },
-    {
-      id: 2,
-      profilePic: "../images/dogpic2.jpeg",
-      lastMessage: "Let's catch up later!",
-      lastMessageTime: "11:20 AM",
-    },
-  ];
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const userID = localStorage.getItem("userID");
+        const response = await fetch(
+          `http://localhost:8082/api/listRoom?userID=${userID}`
+        );
+        const data = await response.json();
+        console.log(data);
+        setMessages(data.messages || []);
+      } catch (error) {
+        console.log("Error fetching messages:", error);
+        setMessages([]);
+      }
+    };
+    fetchMessages();
+  }, []);
+
   return (
     <div>
       <Navbar></Navbar>
       <div className="w-full pt-0 bg-inherit shadow-md rounded-lg overflow-hidden">
-        {dataMessages.map((room) => (
+        {messages.map((room) => (
           <RowMessage
-            key={room.id}
+            key={room.matchesId}
+            idUserChoosen={room.userId}
+            nameUserChoosen={room.nameUserChoosen}
+            ageUserChoosen={room.ageUserChoosen}
+            matchesId={room.matchesId}
             profilePic={room.profilePic}
             lastMessage={room.lastMessage}
-            lastMessageTime={room.lastMessageTime}
+            lastMessageTime={new Date(room.lastMessageTime).toLocaleTimeString(
+              [],
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}
           />
         ))}
       </div>
