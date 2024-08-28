@@ -640,7 +640,8 @@ func main() {
 	http.HandleFunc("/api/listRoom", getListMessages)
 	http.HandleFunc("/", handler)
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		// AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{"https://pawfectly-beta.vercel.app"},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type"},
 		AllowCredentials: true,

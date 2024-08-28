@@ -26,11 +26,11 @@ export default function Navbar() {
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.clear();
     setIsLogin(false);
     localStorage.setItem("isLogin", false);
     setIsDropdownOpen(false);
     console.log(localStorage.getItem("isLogin"));
+    localStorage.clear();
     navigate("/");
   };
 
