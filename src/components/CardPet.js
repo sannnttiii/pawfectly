@@ -34,9 +34,9 @@ export default function CardPet(pet) {
       }
     };
     setMatch();
+    window.location.reload();
     if (modal) {
       setModal(!modal);
-      window.location.reload();
     }
   };
   const handleCancel = (idChoosen) => {

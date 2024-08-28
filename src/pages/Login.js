@@ -84,11 +84,11 @@ function Login() {
               </div>
               {errorAlert && <span className="errorAlert">{errorAlert}</span>}
 
-              <div className="mt-4 flex items-end justify-end">
+              {/* <div className="mt-4 flex items-end justify-end">
                 <button className="font-normal text-base text-orange-500 ">
                   Forgot Password?
                 </button>
-              </div>
+              </div> */}
               <div className="mt-8 flex flex-col gap-y-4">
                 <button
                   className=" w-full bg-orange-500 text-white text-lg font-bold py-3 rounded-xl hover:bg-orange-700"

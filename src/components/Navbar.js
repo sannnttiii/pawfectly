@@ -53,7 +53,7 @@ export default function Navbar() {
         </div>
       </Link>
 
-      {isLogin ? (
+      {isLogin && imagePet ? (
         <div className="relative">
           <img
             src={`http://localhost:8082/images/profpic/${imagePet}`}
