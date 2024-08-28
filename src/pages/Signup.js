@@ -27,7 +27,7 @@ export default function Signup() {
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          localStorage.setItem("isLogin", JSON.stringify("isLogin"));
+          localStorage.setItem("isLogin", true);
           localStorage.setItem("userID", data.user_id);
           navigate("/preprofile");
           console.log("Signup success");

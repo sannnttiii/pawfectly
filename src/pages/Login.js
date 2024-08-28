@@ -28,7 +28,7 @@ function Login() {
         localStorage.setItem("imagePet", data.image_pet);
 
         localStorage.setItem("petType", data.petType);
-        localStorage.setItem("isLogin", JSON.stringify("isLogin"));
+        localStorage.setItem("isLogin", true);
         navigate("/homepage");
         console.log("successfully login");
       } else {

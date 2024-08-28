@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Message from "./pages/Message";
 import MatchPopup from "./components/MatchPopup";
 import ListMessage from "./pages/ListMessage";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -32,27 +33,51 @@ const router = createBrowserRouter([
   },
   {
     path: "/preprofile",
-    element: <Preprofile />,
+    element: (
+      <ProtectedRoute>
+        <Preprofile />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/homepage",
-    element: <Homepage />,
+    element: (
+      <ProtectedRoute>
+        <Homepage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/messages",
-    element: <ListMessage />,
+    element: (
+      <ProtectedRoute>
+        <ListMessage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/message",
-    element: <Message />,
+    element: (
+      <ProtectedRoute>
+        <Message />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/popup",
-    element: <MatchPopup />,
+    element: (
+      <ProtectedRoute>
+        <MatchPopup />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

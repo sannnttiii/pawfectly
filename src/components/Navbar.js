@@ -4,39 +4,40 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Navbar() {
   //isLogin state based on localStorage value
   const [isLogin, setIsLogin] = useState(
-    JSON.parse(localStorage.getItem("isLogin")) === "isLogin"
+    localStorage.getItem("isLogin") === "true"
   );
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [imagePet, setImagePet] = useState("");
 
-  const toggleLogin = () => {
-    console.log(JSON.parse(localStorage.getItem("isLogin")));
-    const newIsLogin = !isLogin;
-    setIsLogin(newIsLogin);
+  // const toggleLogin = () => {
+  //   console.log(JSON.parse(localStorage.getItem("isLogin")));
+  //   // const newIsLogin = !isLogin;
+  //   // setIsLogin(newIsLogin);
 
-    // set value in localStorage
-    if (newIsLogin) {
-      localStorage.setItem("isLogin", JSON.stringify("isLogin"));
-    } else {
-      localStorage.setItem("isLogin", JSON.stringify("notLogin"));
-    }
-    console.log(JSON.parse(localStorage.getItem("isLogin")));
-  };
+  //   // set value in localStorage
+  //   if (newIsLogin) {
+  //     localStorage.setItem("isLogin", JSON.stringify("isLogin"));
+  //   } else {
+  //     localStorage.setItem("isLogin", JSON.stringify("notLogin"));
+  //   }
+  //   console.log(JSON.parse(localStorage.getItem("isLogin")));
+  // };
 
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
     setIsLogin(false);
-    localStorage.setItem("isLogin", JSON.stringify("notLogin"));
+    localStorage.setItem("isLogin", false);
     setIsDropdownOpen(false);
-    console.log(JSON.parse(localStorage.getItem("isLogin")));
+    console.log(localStorage.getItem("isLogin"));
     navigate("/");
   };
 
   useEffect(() => {
-    const loginStatus = JSON.parse(localStorage.getItem("isLogin"));
+    const loginStatus = localStorage.getItem("isLogin");
     const storedImagePet = localStorage.getItem("imagePet");
-    if (loginStatus === "isLogin") {
+    if (loginStatus) {
       setIsLogin(true);
       setImagePet(storedImagePet);
     } else {
@@ -87,7 +88,7 @@ export default function Navbar() {
         <Link to={"/login"}>
           <button
             className="flex items-center justify-center bg-yellow-500 hover:bg-yellow-700 transform py-2 px-6 rounded-xl text-white font-semibold text-lg border-1 border-gray-100 w-full"
-            onClick={toggleLogin}
+            // onClick={toggleLogin}
           >
             Login
           </button>

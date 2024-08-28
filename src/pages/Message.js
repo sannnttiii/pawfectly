@@ -2,24 +2,21 @@ import React, { useEffect, useState } from "react";
 import NavMessage from "../components/NavMessage";
 import BubbleMessage from "../components/BubbleMessage";
 import NavMessageBottom from "../components/NavMessageBottom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-// const messages = [
-//   { message: "Hello! ", isOwn: false },
-//   {
-//     message:
-//       "Hi there! just found out that maybe our dog can be friends. I'm based on Surabaya, can we meet?  ",
-//     isOwn: true,
-//   },
-//   { message: "Sounds great!", isOwn: false },
-// ];
 function Message() {
   const [messages, setMessages] = useState([]);
   const idLogin = parseInt(localStorage.getItem("userID"));
   const location = useLocation();
-  const { idUserChoosen, matchesId } = location.state || {};
+  const { matchesId } = location.state || {};
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!matchesId) {
+      navigate("/messages"); // Redirect to /messages if state is missing
+      return;
+    }
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(
