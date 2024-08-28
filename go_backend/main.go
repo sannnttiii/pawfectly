@@ -617,7 +617,9 @@ func getListMessages(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
+	// conn, err = pgx.Connect(context.Background(), "postgres://postgres:postgres@localhost:5432/pawfectly")
+	conn, err = pgx.Connect(context.Background(), "postgres://default:VEaAruPg7fk9@ep-spring-lab-a1ne9eij.ap-southeast-1.aws.neon.tech:5432/verceldb?sslmode=require")
+
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
