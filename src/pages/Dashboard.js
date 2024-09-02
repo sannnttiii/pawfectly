@@ -7,7 +7,7 @@ function Dashboard() {
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    setIsLogin(localStorage.getItem("isLogin") === true);
+    setIsLogin(localStorage.getItem("isLogin"));
   }, []);
 
   return (
