@@ -35,7 +35,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="justify-center pt-6">
-          <Link to={isLogin ? "/homepage" : "/login"}>
+          <Link to={!isLogin | (isLogin === "false") ? "/login" : "/homepage"}>
             <button className="flex items-center justify-center bg-white text-yellow-500 hover:scale-110 transform py-4 px-20 rounded-full font-semibold text-lg border-1 border-gray-100 w-full">
               Start Matching
             </button>
