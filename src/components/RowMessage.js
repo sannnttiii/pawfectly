@@ -26,7 +26,7 @@ function RowMessage({
   return (
     <div className="flex items-center p-4 border-b" onClick={handleClick}>
       <img
-        src={`http://localhost:8082/images/profpic/${profilePic}`}
+        src={`http://3.89.232.227:8082/images/profpic/${profilePic}`}
         alt="Image"
         className="w-14 h-14 rounded-full mr-4"
       />

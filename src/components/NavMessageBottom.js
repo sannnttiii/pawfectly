@@ -12,7 +12,7 @@ export default function NavMessageBottom({ onNewMessage }) {
     if (message.trim() === "") return; // Prevent sending empty message
 
     try {
-      const response = await fetch(`http://localhost:8082/api/sendMessage`, {
+      const response = await fetch(`http://3.89.232.227:8082/api/sendMessage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

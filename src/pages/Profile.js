@@ -19,7 +19,7 @@ function Profile() {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8082/api/getProfile?id=${id}`
+          `http://3.89.232.227:8082/api/getProfile?id=${id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -38,7 +38,7 @@ function Profile() {
           if (data.image) {
             console.log(data.image + "UAJODJD");
             setImagePreview(
-              `http://localhost:8082/images/profpic/${data.image}`
+              `http://3.89.232.227:8082/images/profpic/${data.image}`
             );
             console.log(imagePreview);
           }
@@ -69,7 +69,7 @@ function Profile() {
     formData.append("id", id);
 
     try {
-      const response = await fetch("http://localhost:8082/api/setProfile", {
+      const response = await fetch("http://3.89.232.227:8082/api/setProfile", {
         method: "POST",
         body: formData,
       });

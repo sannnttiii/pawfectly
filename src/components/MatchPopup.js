@@ -41,12 +41,12 @@ function MatchPopup({
               <div className="relative flex items-center justify-center mb-8">
                 <div className="relative flex items-center justify-center">
                   <img
-                    src={`http://localhost:8082/images/profpic/${storedImagePet}`}
+                    src={`http://3.89.232.227:8082/images/profpic/${storedImagePet}`}
                     alt="image"
                     className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
                   />
                   <img
-                    src={`http://localhost:8082/images/profpic/${profPicUserChoosen}`}
+                    src={`http://3.89.232.227:8082/images/profpic/${profPicUserChoosen}`}
                     alt="image"
                     className="w-32 h-32 rounded-full border-4 border-white shadow-lg ml-8"
                   />

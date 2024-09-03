@@ -20,7 +20,9 @@ function Homepage() {
       try {
         const id = parseInt(localStorage.getItem("userID"));
 
-        const response = await fetch(`http://localhost:8082/api/pets?id=${id}`);
+        const response = await fetch(
+          `http://3.89.232.227:8082/api/pets?id=${id}`
+        );
         const data = await response.json();
         console.log(data);
         setPets(data || []);
