@@ -624,7 +624,7 @@ func main() {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer conn.Close(context.Background())
-	// Handler untuk melayani file gambar dari go_backend/images/profpic
+	// Handler file gambar dari go_backend/images/profpic
 	fileServer := http.FileServer(http.Dir("./images/profpic"))
 	http.Handle("/images/profpic/", http.StripPrefix("/images/profpic/", fileServer))
 
@@ -654,4 +654,8 @@ func main() {
 	if err := http.ListenAndServe(":8082", handler); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
+	if err := http.ListenAndServe("0.0.0.0:8082", handler); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+
 }
