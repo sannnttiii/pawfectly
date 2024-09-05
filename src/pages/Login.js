@@ -10,7 +10,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://3.89.232.227:8082/api/login", {
+      const response = await fetch("http://44.205.252.153:8082/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ function Login() {
         <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray w-4/5">
           <h1 className="text-4xl font-semibold">Welcome Back</h1>
           <p className="font-medium text-lg text-gray-500 mt-4">
-            Welcome back! please enter your details.
+            Welcome back! please enter your detailssss
           </p>
           <form onSubmit={handleLogin}>
             <div>

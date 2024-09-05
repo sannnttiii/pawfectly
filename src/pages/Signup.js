@@ -13,7 +13,7 @@ export default function Signup() {
     try {
       // console.log(password, confirmPassword);
       if (password === confirmPassword) {
-        const response = await fetch("http://3.89.232.227:8082/api/signup", {
+        const response = await fetch("http://44.205.252.153:8082/api/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

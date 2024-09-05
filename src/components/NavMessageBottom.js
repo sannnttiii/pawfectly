@@ -12,13 +12,16 @@ export default function NavMessageBottom({ onNewMessage }) {
     if (message.trim() === "") return; // Prevent sending empty message
 
     try {
-      const response = await fetch(`http://3.89.232.227:8082/api/sendMessage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message, matchesId, senderId }),
-      });
+      const response = await fetch(
+        `http://44.205.252.153:8082/api/sendMessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message, matchesId, senderId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to send message");

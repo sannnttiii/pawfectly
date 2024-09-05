@@ -21,7 +21,7 @@ function Homepage() {
         const id = parseInt(localStorage.getItem("userID"));
 
         const response = await fetch(
-          `http://3.89.232.227:8082/api/pets?id=${id}`
+          `http://44.205.252.153:8082/api/pets?id=${id}`
         );
         const data = await response.json();
         console.log(data);
