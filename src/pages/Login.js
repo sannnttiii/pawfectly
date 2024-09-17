@@ -10,7 +10,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://44.205.252.153:8082/api/login", {
+      const response = await fetch("http://localhost:8082/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

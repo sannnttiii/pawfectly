@@ -10,7 +10,7 @@ export default function ListMessage() {
       try {
         const userID = localStorage.getItem("userID");
         const response = await fetch(
-          `http://44.205.252.153:8082/api/listRoom?userID=${userID}`
+          `http://localhost:8082/api/listRoom?userID=${userID}`
         );
         const data = await response.json();
         console.log(data);

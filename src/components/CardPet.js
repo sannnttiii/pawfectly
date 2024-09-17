@@ -10,7 +10,7 @@ export default function CardPet(pet) {
     const setMatch = async () => {
       try {
         const response = await fetch(
-          `http://44.205.252.153:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=match`,
+          `http://localhost:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=match`,
           {
             method: "POST",
             headers: {
@@ -45,7 +45,7 @@ export default function CardPet(pet) {
         const idLogin = parseInt(localStorage.getItem("userID"));
 
         const response = await fetch(
-          `http://44.205.252.153:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=unmatch`,
+          `http://localhost:8082/api/setMatch?userid1=${idLogin}&userid2=${idChoosen}&status=unmatch`,
           {
             method: "POST",
             headers: {
@@ -72,7 +72,7 @@ export default function CardPet(pet) {
       <div className="p-5 flex flex-col">
         <div className="rounded-xl over">
           <img
-            src={`http://44.205.252.153:8082/images/profpic/${pet.item.image_pet}`}
+            src={`http://localhost:8082/images/profpic/${pet.item.image_pet}`}
             alt="Image"
           />
         </div>

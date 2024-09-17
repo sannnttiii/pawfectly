@@ -20,7 +20,7 @@ export default function NavMessage() {
           </Link>
           <div className=" rounded-full overflow-hidden">
             <img
-              src={`http://44.205.252.153:8082/images/profpic/${profPicUserChoosen}`}
+              src={`http://localhost:8082/images/profpic/${profPicUserChoosen}`}
               className="w-12 h-12 mr-0"
               alt="Profile"
             />

@@ -20,7 +20,7 @@ function Message() {
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          `http://44.205.252.153:8082/api/messages?matchesId=${matchesId}`
+          `http://localhost:8082/api/messages?matchesId=${matchesId}`
         );
         const data = await response.json();
         setMessages(data.messages || []);

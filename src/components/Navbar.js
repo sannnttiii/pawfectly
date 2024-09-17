@@ -56,7 +56,7 @@ export default function Navbar() {
       {isLogin && imagePet ? (
         <div className="relative">
           <img
-            src={`http://44.205.252.153:8082/images/profpic/${imagePet}`}
+            src={`http://localhost:8082/images/profpic/${imagePet}`}
             alt="Image"
             className="w-16 h-16 rounded-full border-4 border-white shadow-lg cursor-pointer"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

@@ -14,19 +14,16 @@ function Preprofile() {
     localStorage.setItem("petType", petType);
 
     try {
-      const response = await fetch(
-        "http://44.205.252.153:8082/api/setPetType",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            petType,
-            id,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8082/api/setPetType", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          petType,
+          id,
+        }),
+      });
 
       if (response.ok) {
         console.log("Pet type updated successfully");
